@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI 提示词工具箱</title>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #eef2ff;
+    --primary-dark: #4f46e5;
+    --accent: #06b6d4;
+    --orange: #f59e0b;
+    --pink: #ec4899;
+    --green: #10b981;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-500: #64748b;
+    --gray-700: #334155;
+    --gray-900: #0f172a;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 36px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: .4;
+  }
+  .header h1 { font-size: 28px; font-weight: 800; position: relative; letter-spacing: 1px; }
+  .header p { font-size: 14px; opacity: .85; margin-top: 6px; position: relative; }
+
+  /* Search */
+  .search-wrap {
+    max-width: 600px;
+    margin: -24px auto 20px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 10;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 4px 16px;
+    gap: 10px;
+  }
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    padding: 14px 0;
+    background: transparent;
+  }
+  .search-box input::placeholder { color: var(--gray-500); }
+  .search-box .icon { font-size: 18px; color: var(--gray-500); }
+
+  /* Categories */
+  .cat-nav {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    flex-shrink: 0;
+    padding: 10px 20px;
+    border: 2px solid var(--gray-200);
+    border-radius: 100px;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+    color: var(--gray-700);
+    white-space: nowrap;
+  }
+  .cat-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .cat-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(99,102,241,.35);
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+  }
+
+  /* Card */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    cursor: pointer;
+    transition: .2s;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+  .card:active { transform: scale(.98); }
+  .card .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .badge-blue { background: var(--primary-light); color: var(--primary); }
+  .badge-green { background: #d1fae5; color: #059669; }
+  .badge-orange { background: #fef3c7; color: #d97706; }
+  .badge-pink { background: #fce7f3; color: #db2777; }
+  .badge-cyan { background: #cffafe; color: #0891b2; }
+  .badge-purple { background: #f3e8ff; color: #9333ea; }
+
+  .card .title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .card .desc {
+    font-size: 13px;
+    color: var(--gray-500);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card .prompt-preview {
+    margin-top: 12px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--gray-700);
+    line-height: 1.5;
+    max-height: 60px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card .prompt-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: linear-gradient(transparent, var(--gray-100));
+  }
+  .card .copy-hint {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 12px;
+    color: var(--gray-500);
+    opacity: 0;
+    transition: .2s;
+    background: var(--gray-100);
+    padding: 2px 10px;
+    border-radius: 100px;
+  }
+  .card:hover .copy-hint { opacity: 1; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--gray-900);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: .3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0,0,0,.25);
+  }
+  .modal-header {
+    padding: 20px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .modal-header h2 { font-size: 20px; }
+  .modal-header .badge { margin-top: 4px; }
+  .modal-close {
+    background: var(--gray-100);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--gray-500);
+    transition: .2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { background: var(--gray-200); }
+  .modal-body {
+    padding: 16px 24px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .modal-body .desc { font-size: 14px; color: var(--gray-500); margin-bottom: 16px; }
+  .modal-body textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    font-family: inherit;
+    outline: none;
+    transition: .2s;
+  }
+  .modal-body textarea:focus { border-color: var(--primary); }
+  .modal-body .btn-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 12px 24px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .modal-body .btn-copy:hover { background: var(--primary-dark); }
+  .modal-body .btn-copy:active { transform: scale(.97); }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray-500);
+    grid-column: 1 / -1;
+  }
+  .empty .big { font-size: 48px; margin-bottom: 12px; }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+    color: var(--gray-500);
+  }
+
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 22px; }
+    .cat-btn { padding: 8px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>🤖 AI 提示词工具箱</h1>
+  <p>精选提示词模板 · 一键复制 · 即开即用</p>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索提示词..." oninput="render()">
+  </div>
+</div>
+
+<div class="cat-nav" id="catNav"></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="toast" id="toast">✅ 已复制到剪贴板</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle"></h2>
+        <span class="badge" id="modalBadge"></span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="desc" id="modalDesc"></p>
+      <textarea id="modalText" readonly></textarea>
+      <button class="btn-copy" onclick="copyModal()">📋 复制提示词</button>
+    </div>
+  </div>
+</div>
+
+<footer>收集整理 · 持续更新 🚀</footer>
+
+<script>
+const data = [
+  // ===== 写作助手 =====
+  { cat: "写作", title: "通用文章写作", badge: "blue", desc: "按主题生成结构完整的文章，支持议论文/说明文/记叙文", prompt: "请帮我写一篇关于【主题】的文章，文体为【议论文/说明文/记叙文】，字数约【800】字。要求：结构清晰、有开头的引入、中间的论述展开、最后的总结收尾。语言风格【正式/轻松/学术】。" },
+  { cat: "写作", title: "小红书文案", badge: "pink", desc: "生成小红书风格种草笔记，带 emoji 和话题标签", prompt: "请写一篇小红书风格的种草笔记，主题是【产品/体验名称】。要求：标题要吸引眼球，正文使用 emoji 和分段，突出 3 个核心卖点，最后加上相关话题标签。语气亲切真实，像朋友推荐一样。" },
+  { cat: "写作", title: "公众号文章", badge: "blue", desc: "公众号长文排版风格，适合信息类/观点类内容", prompt: "请以公众号风格写一篇关于【主题】的文章。要求：开头用引人入胜的 hook 或故事引入，正文分 3-4 个小标题段落，每个段落有核心观点+案例/数据支撑，结尾要有互动引导（点赞/在看/留言）。全文约 1500 字。" },
+  { cat: "写作", title: "短视频脚本", badge: "orange", desc: "15-60 秒短视频口播脚本，含画面描述", prompt: "请写一个【15/30/60】秒的短视频脚本，主题是【主题】。格式：时间码 + 画面描述 + 口播文案。开头 3 秒要 hook 住观众，中间讲核心内容，结尾引导关注/点赞。适合【抖音/快手/视频号】风格。" },
+  { cat: "写作", title: "邮件写作", badge: "green", desc: "商务邮件/求职邮件/日常邮件模板", prompt: "请帮我写一封【商务/求职/日常】邮件。收件人：【身份】。目的：【目的】。语气：【正式/半正式/友好】。请包含邮件主题行、称呼、正文、结束语。" },
+  { cat: "写作", title: "演讲稿", badge: "purple", desc: "各种场合演讲稿，含开场白/主体/结尾", prompt: "请写一篇关于【主题】的演讲稿，演讲时长约【5】分钟。要求：开场白要抓人（可以用提问/故事/数据），主体分 3 个要点展开，结尾要有号召力。适合场合：【会议/典礼/TED风格】。" },
+
+  // ===== 编程开发 =====
+  { cat: "编程", title: "代码生成", badge: "green", desc: "按需求生成完整代码，支持各种语言", prompt: "请用【Python/JavaScript/Java/Go/其他】实现【功能描述】。要求：代码完整可运行，包含必要的错误处理，添加中文注释说明关键逻辑。输入输出格式：【描述】。" },
+  { cat: "编程", title: "代码审查", badge: "orange", desc: "审查代码质量、安全性、性能问题", prompt: "请审查以下代码，检查：1) 潜在的 bug 和逻辑错误 2) 安全漏洞 3) 性能问题 4) 代码风格和可读性 5) 可以优化的地方。按严重程度分类输出报告。【粘贴代码】" },
+  { cat: "编程", title: "Bug 修复", badge: "red", desc: "分析错误信息并给出修复方案", prompt: "我遇到了以下错误：\n【粘贴错误信息】\n相关代码：\n【粘贴代码】\n请帮我：1) 分析错误原因 2) 给出修复方案 3) 解释为什么这个修复有效" },
+  { cat: "编程", title: "SQL 查询", badge: "blue", desc: "生成/优化 SQL 查询语句", prompt: "数据表结构如下：\n【描述表结构】\n我需要查询：【需求描述】\n请帮我写对应的 SQL 查询语句，要求：1) 高效 2) 包含必要的索引建议 3) 如果是复杂查询请解释执行逻辑" },
+  { cat: "编程", title: "正则表达式", badge: "purple", desc: "生成和解释正则表达式", prompt: "我需要一个正则表达式来匹配【描述要匹配的文本模式】。样本数据：\n【提供样本】\n请给出正则表达式并解释每一部分的含义，同时提供不同语言的用法示例。" },
+  { cat: "编程", title: "API 接口设计", badge: "cyan", desc: "RESTful API 接口设计方案", prompt: "请帮我设计一个【RESTful/GraphQL】API，功能是：【功能描述】。请输出：1) 接口列表（方法+路径）2) 请求/响应格式（JSON） 3) 鉴权方式 4) 错误处理方案 5) 使用示例。" },
+  { cat: "编程", title: "重构建议", badge: "green", desc: "代码重构优化建议，提升可维护性", prompt: "请帮我重构以下代码，目标是：提高可读性、降低复杂度、提升可维护性。\n【粘贴代码】\n请输出：1) 当前代码的问题 2) 重构后的代码 3) 重构要点说明" },
+  { cat: "编程", title: "单元测试", badge: "orange", desc: "生成单元测试用例和测试代码", prompt: "请为以下代码编写单元测试：\n【粘贴代码】\n测试框架：【Jest/Pytest/JUnit/其他】。要求：覆盖正常情况、边界情况、异常情况。测试代码需要可运行。" },
+
+  // ===== 图像生成 =====
+  { cat: "图像", title: "Midjourney 提示词", badge: "purple", desc: "生成高质量 MJ 提示词，含参数设置", prompt: "请生成一个 Midjourney 提示词，主题：【描述画面内容】。风格：【写实/动漫/油画/3D/像素等】。色彩：【冷暖/明亮/暗黑】。请提供：1) 英文提示词 2) 中文释义 3) 建议参数（--ar --v --s --iw 等）。" },
+  { cat: "图像", title: "DALL·E 提示词", badge: "green", desc: "面向 DALL·E 3 的详细画面描述", prompt: "请为 DALL·E 3 生成一段详细的画面描述提示词，主题：【描述】。要求：包含主体描述、环境/背景、光线/色调、构图方式、艺术风格。用英文写，清晰准确。" },
+  { cat: "图像", title: "Stable Diffusion", badge: "blue", desc: "SD 提示词 + 负面提示词 + 参数", prompt: "请为 Stable Diffusion 生成提示词。正向提示词：【画面描述】。请同时提供：1) 正向提示词（英文） 2) 负面提示词（常见的画质问题和不需要的元素） 3) 建议参数（Steps, CFG, Sampler, Model 等）" },
+  { cat: "图像", title: "Logo 设计思路", badge: "orange", desc: "根据品牌描述生成 Logo 设计方案", prompt: "请为【品牌名】设计一个 Logo 方案。品牌定位：【描述】。行业：【行业】。请输出 3 个不同方向的概念方案，每个方案包含：1) 设计理念 2) 色彩方案 3) 图形元素描述 4) 适用于 AI 生成工具的提示词。" },
+  { cat: "图像", title: "UI 界面描述", badge: "cyan", desc: "生成 UI 设计提示词，用于 AI 出图", prompt: "请生成一个 UI 界面设计提示词，应用类型：【移动端/Web/桌面】。功能页面：【页面描述】。设计风格：【极简/Material Design/iOS/新拟态等】。主色调：【色值或颜色名】。请输出可用于 AI 设计工具的详细英文提示词。" },
+
+  // ===== 角色扮演 =====
+  { cat: "角色", title: "AI 角色设定", badge: "pink", desc: "为 AI 设定角色人设和对话风格", prompt: "请你扮演以下角色：\n角色名：【名称】\n性格：【描述性格特点】\n背景：【背景故事】\n说话风格：【正式/幽默/毒舌/温柔等】\n知识范围：【角色的知识边界】\n禁忌：【角色不会做/说的事情】\n现在开始以该角色的身份与我对话。" },
+  { cat: "角色", title: "面试模拟", badge: "blue", desc: "模拟面试官进行岗位面试练习", prompt: "请你扮演一名面试官，面试岗位：【职位名称】，行业：【行业】。面试等级：【初级/中级/高级】。请按真实面试流程进行：先让我自我介绍，然后依次提问技术问题、行为问题、情景问题，最后给出反馈。每次我问完回答后，你再继续追问。" },
+  { cat: "角色", title: "语言练习伙伴", badge: "green", desc: "模拟母语者陪你练习外语对话", prompt: "请你扮演一名【英语/日语/法语/其他语言】母语者，与我进行日常对话练习。我的水平：【初级/中级/高级】。请：1) 用自然的口语和我对话 2) 当我出现语法错误时，在我说完后温和纠正 3) 提供更地道的表达方式 4) 话题建议：【日常/旅行/商务/自由话题】。" },
+  { cat: "角色", title: "历史人物对话", badge: "orange", desc: "扮演历史人物进行穿越对话", prompt: "请你扮演【历史人物名】，用该人物的口吻和知识背景与我对话。请完全代入该人物的：1) 语言风格和用词习惯 2) 历史背景和世界观 3) 性格特点。我可以问任何问题，请以该人物会如何回答的方式来回应。" },
+  { cat: "角色", title: "心理咨询师", badge: "purple", desc: "扮演专业心理咨询师进行疏导对话", prompt: "请你扮演一名专业的心理咨询师，采用【认知行为疗法/人本主义/正念】取向。请：1) 营造安全、无评判的对话氛围 2) 使用积极倾听和共情回应 3) 适当提问引导我自我探索 4) 不提供医疗诊断 5) 如果发现需要专业帮助的情况，建议寻求线下心理咨询。" },
+
+  // ===== 翻译润色 =====
+  { cat: "翻译", title: "全文翻译", badge: "blue", desc: "多语言互译，保留格式和语气", prompt: "请将以下内容翻译成【目标语言】。要求：1) 准确传达原文意思 2) 符合目标语言表达习惯 3) 保持原文的语气和风格 4) 专业术语翻译准确 5) 保留原文格式（换行、列表等）。\n\n【粘贴原文】" },
+  { cat: "翻译", title: "学术润色", badge: "purple", desc: "学术论文语言润色，符合发表标准", prompt: "请润色以下学术文本，目标期刊：【期刊名/领域】。要求：1) 改进语法和用词 2) 提升学术正式度 3) 优化句式结构使表达更清晰 4) 保持原意不变 5) 输出时用 Track Changes 格式标注修改处。\n\n【粘贴原文】" },
+  { cat: "翻译", title: "文案润色", badge: "pink", desc: "营销/社交文案润色，提升吸引力", prompt: "请润色以下文案，目标场景：【朋友圈/公众号/广告/其他】。要求：1) 保留核心信息 2) 提升语言吸引力和感染力 3) 优化节奏和韵律 4) 提供 3 个不同风格的版本（简洁版/生动版/正式版）。\n\n【粘贴原文】" },
+  { cat: "翻译", title: "中英混排清理", badge: "green", desc: "规范中英文混排的空格和标点", prompt: "请规范以下中英混排文本：1) 中文与英文之间加空格 2) 中文使用全角标点 3) 英文保留半角标点 4) 统一术语大小写 5) 修正明显的拼写错误。\n\n【粘贴文本】" },
+  { cat: "翻译", title: "简化改写", badge: "orange", desc: "将复杂内容改写得通俗易懂", prompt: "请将以下内容改写得通俗易懂。目标读者：【如：初中生/普通大众/跨行读者】。要求：1) 用简单的语言解释专业术语 2) 使用类比和例子帮助理解 3) 保留核心信息 4) 缩短句子长度 5) 保持逻辑连贯。\n\n【粘贴原文】" },
+
+  // ===== 数据分析 =====
+  { cat: "数据", title: "Excel 公式", badge: "green", desc: "生成 Excel/Google Sheets 公式", prompt: "我需要一个 Excel/Google Sheets 公式来实现：【功能描述】。数据结构：【描述数据范围，如 A1:A100 是日期，B1:B100 是金额】。请给出完整的公式并解释每一部分的作用。如果有多种实现方式，请提供最优方案。" },
+  { cat: "数据", title: "数据可视化建议", badge: "blue", desc: "根据数据特征推荐最佳图表类型", prompt: "我有以下数据：【描述数据结构/提供样本】。分析目标：【想从数据中看到什么】。请推荐最适合的图表类型，并说明：1) 为什么这种图表最合适 2) 如何配置坐标轴和图例 3) 用【Python/JS/Excel】的实现思路。" },
+  { cat: "数据", title: "Python 数据分析", badge: "orange", desc: "Pandas/NumPy 数据分析脚本", prompt: "请用 Python 帮我分析以下数据：\n数据描述：【格式和字段说明】\n分析目标：【想要的分析结果】\n请输出完整代码，使用 pandas/numpy/matplotlib，包含：1) 数据加载和清洗 2) 核心分析逻辑 3) 可视化图表 4) 结果解读。" },
+  { cat: "数据", title: "统计方法选择", badge: "purple", desc: "根据研究问题推荐统计方法", prompt: "我的研究问题是：【问题描述】。数据类型：【分类/连续/有序】。样本量：【数量】。假设条件：【已知的分布特征】。请推荐：1) 最适合的统计方法 2) 方法的假设前提 3) 如何检验这些前提 4) 用【SPSS/R/Python】的实现方式。" },
+
+  // ===== 学习辅助 =====
+  { cat: "学习", title: "知识点解释", badge: "blue", desc: "用多种方式解释复杂概念", prompt: "请解释【概念名称】。要求：1) 用一句话简单定义 2) 详细展开说明（300字） 3) 举一个生活中的类比帮助理解 4) 给出 2-3 个实际应用例子 5) 如果是新手常犯的错误是什么。假设我对这个领域完全不了解。" },
+  { cat: "学习", title: "学习计划", badge: "green", desc: "定制化学习路线和计划", prompt: "请为我制定一个学习【技能/领域】的计划。现状：【我目前的基础】。目标：【希望达到的水平】。可用时间：【每天/每周多少小时】。期限：【希望在多长时间内达成】。请输出：1) 分阶段的学习路线 2) 每个阶段的核心学习资源推荐 3) 每周学习时间分配 4) 里程碑检查点。" },
+  { cat: "学习", title: "思维导图大纲", badge: "purple", desc: "为主题生成思维导图文字大纲", prompt: "请为【主题】生成一份思维导图大纲。格式如下（用缩进表示层级）：\n主题\n├── 一级分支 1\n│   ├── 二级分支 1.1\n│   │   └── 三级分支 1.1.1\n│   └── 二级分支 1.2\n├── 一级分支 2\n..." },
+  { cat: "学习", title: "错题分析", badge: "orange", desc: "分析错题并给出同类练习题", prompt: "我在【科目】上做错了这道题：\n题目：【题目内容】\n我的答案：【你的答案】\n正确答案：【正确答案】\n请帮我：1) 分析我做错的原因 2) 讲解正确的解题思路 3) 总结这类题型的解题方法 4) 出 3 道类似的练习题让我巩固。" },
+  { cat: "学习", title: "记忆口诀", badge: "pink", desc: "把难记的内容编成口诀/助记", prompt: "请为以下内容编一个容易记忆的口诀/助记方法：\n【需要记忆的内容】\n要求：1) 朗朗上口 2) 覆盖所有关键点 3) 可以用谐音/故事/图像联想等方法 4) 解释口诀和原内容的对应关系。" },
+  { cat: "学习", title: "论文大纲", badge: "purple", desc: "学术论文结构设计和大纲生成", prompt: "请帮我拟定一篇关于【论文主题】的论文大纲。类型：【课程论文/毕业论文/期刊论文】。字数要求：【字数】。请输出：1) 论文标题建议（3 个选项） 2) 摘要（100 字） 3) 章节结构（含每个小节的要点） 4) 每个章节建议的参考文献类型。" },
+  { cat: "学习", title: "书籍总结", badge: "cyan", desc: "快速提炼书籍核心内容", prompt: "请总结《【书名】》这本书。要求：1) 书籍核心观点（3-5 句话） 2) 每个章节的要点提炼 3) 书中最有价值/最值得记住的 5 个 takeaways 4) 适合什么人读 5) 如果有的话，指出书中有争议或值得商榷的观点。" },
+];
+
+const categories = [...new Set(data.map(d => d.cat))];
+const badgeColors = { blue: 'badge-blue', green: 'badge-green', orange: 'badge-orange', pink: 'badge-pink', cyan: 'badge-cyan', purple: 'badge-purple', red: 'badge-pink' };
+
+let currentCat = '全部';
+let currentData = data;
+
+// Render cat nav
+function renderCatNav() {
+  const nav = document.getElementById('catNav');
+  const allCats = ['全部', ...categories];
+  nav.innerHTML = allCats.map(c =>
+    `<button class="cat-btn${c === currentCat ? ' active' : ''}" onclick="switchCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+// Switch category
+function switchCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.textContent === cat));
+  render();
+}
+
+// Render cards
+function render() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  currentData = data.filter(d => {
+    const matchCat = currentCat === '全部' || d.cat === currentCat;
+    const matchSearch = !q || d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q) || d.cat.includes(q);
+    return matchCat && matchSearch;
+  });
+  const grid = document.getElementById('grid');
+  if (currentData.length === 0) {
+    grid.innerHTML = '<div class="empty"><div class="big">🔍</div><p>没有找到匹配的提示词</p></div>';
+    return;
+  }
+  grid.innerHTML = currentData.map(d => `
+    <div class="card" onclick="openModal(${data.indexOf(d)})">
+      <span class="badge ${badgeColors[d.badge] || 'badge-blue'}">${d.cat}</span>
+      <span class="copy-hint">点击查看</span>
+      <div class="title">${d.title}</div>
+      <div class="desc">${d.desc}</div>
+      <div class="prompt-preview">${d.prompt.slice(0, 80)}...</div>
+    </div>
+  `).join('');
+}
+
+// Modal
+let currentIdx = -1;
+function openModal(idx) {
+  currentIdx = idx;
+  const d = data[idx];
+  document.getElementById('modalTitle').textContent = d.title;
+  document.getElementById('modalDesc').textContent = d.desc;
+  document.getElementById('modalBadge').textContent = d.cat;
+  document.getElementById('modalBadge').className = 'badge ' + (badgeColors[d.badge] || 'badge-blue');
+  document.getElementById('modalText').value = d.prompt;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function copyModal() {
+  const text = document.getElementById('modalText');
+  text.select();
+  navigator.clipboard.writeText(text.value).then(() => showToast());
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Init
+renderCatNav();
+render();
+</script>
+</body>
+</html>
