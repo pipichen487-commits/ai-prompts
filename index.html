@@ -112,12 +112,12 @@
     box-shadow: 0 4px 12px rgba(99,102,241,.35);
   }
 
-  /* Grid - 四宫格: 一行2个 */
+  /* Grid */
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    max-width: 800px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 16px 40px;
   }
@@ -127,7 +127,7 @@
     background: #fff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 16px;
+    padding: 20px;
     cursor: pointer;
     transition: .2s;
     border: 2px solid transparent;
@@ -526,8 +526,12 @@
   .page-privacy, .page-terms { display: none; }
   .page-privacy.active, .page-terms.active { display: block; }
 
-  @media (max-width: 640px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .card { padding: 14px; }
+    .card .title { font-size: 14px; }
+    .card .desc { font-size: 12px; }
+    .card .prompt-preview { font-size: 11px; padding: 8px 10px; }
     .bottom-sections { grid-template-columns: 1fr; }
     .header h1 { font-size: 22px; }
     .cat-btn { padding: 8px 16px; font-size: 13px; }
