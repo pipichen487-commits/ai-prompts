@@ -322,8 +322,69 @@
     color: var(--gray-500);
   }
 
+  /* Bottom sections */
+  .bottom-sections {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .section-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .section-card.full { grid-column: 1 / -1; }
+  .section-card h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qrcode-placeholder {
+    width: 160px;
+    height: 160px;
+    background: var(--gray-100);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px auto;
+    border: 2px dashed var(--gray-200);
+    color: var(--gray-500);
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .tool-list { display: flex; flex-direction: column; gap: 10px; }
+  .tool-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: .2s;
+  }
+  .tool-item:hover { background: var(--primary-light); }
+  .tool-item .tool-name { font-weight: 600; color: var(--text); font-size: 14px; }
+  .tool-item .tool-desc { font-size: 12px; color: var(--gray-500); }
+  .tool-item .tool-link {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .donation-text { font-size: 13px; color: var(--gray-500); text-align: center; }
+
   @media (max-width: 640px) {
     .grid { grid-template-columns: 1fr; }
+    .bottom-sections { grid-template-columns: 1fr; }
     .header h1 { font-size: 22px; }
     .cat-btn { padding: 8px 16px; font-size: 13px; }
   }
@@ -346,6 +407,51 @@
 <div class="cat-nav" id="catNav"></div>
 
 <div class="grid" id="grid"></div>
+
+<!-- Bottom Sections -->
+<div class="bottom-sections">
+  <div class="section-card">
+    <h2>☕ 赞赏支持</h2>
+    <p class="donation-text">如果这个工具对你有帮助，欢迎请我喝杯咖啡 ☕</p>
+    <div class="qrcode-placeholder">
+      扫码赞赏<br>（请替换为你的<br>收款码图片）
+    </div>
+    <p class="donation-text" style="margin-top:8px;">微信 / 支付宝 均可</p>
+  </div>
+  <div class="section-card">
+    <h2>🔧 推荐 AI 工具</h2>
+    <div class="tool-list">
+      <a class="tool-item" href="https://chat.openai.com/" target="_blank" rel="nofollow noopener">
+        <div>
+          <div class="tool-name">ChatGPT</div>
+          <div class="tool-desc">OpenAI 官方对话模型</div>
+        </div>
+        <span class="tool-link">去使用 →</span>
+      </a>
+      <a class="tool-item" href="https://claude.ai/" target="_blank" rel="nofollow noopener">
+        <div>
+          <div class="tool-name">Claude</div>
+          <div class="tool-desc">Anthropic 官方 AI 助手</div>
+        </div>
+        <span class="tool-link">去使用 →</span>
+      </a>
+      <a class="tool-item" href="https://www.midjourney.com/" target="_blank" rel="nofollow noopener">
+        <div>
+          <div class="tool-name">Midjourney</div>
+          <div class="tool-desc">AI 图像生成</div>
+        </div>
+        <span class="tool-link">去使用 →</span>
+      </a>
+      <a class="tool-item" href="https://tongyi.aliyun.com/" target="_blank" rel="nofollow noopener">
+        <div>
+          <div class="tool-name">通义千问</div>
+          <div class="tool-desc">阿里云 AI 大模型</div>
+        </div>
+        <span class="tool-link">去使用 →</span>
+      </a>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast">✅ 已复制到剪贴板</div>
 
