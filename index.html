@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AI 提示词工具箱</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1231193698344258" crossorigin="anonymous"></script>
 <style>
   :root {
     --primary: #6366f1;
@@ -568,8 +569,8 @@
   <div class="adsense-placeholder" id="adsenseTop">
     <div class="ad-label">广告</div>
     <div id="ad-unit-top" style="min-height:90px;">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous" onerror="document.getElementById('adsenseTop').classList.remove('active')"></script>
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1231193698344258" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1231193698344258" data-ad-slot="1231193698" data-ad-format="auto" data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
   </div>
@@ -890,15 +891,10 @@ document.querySelectorAll('.donation-amount').forEach(el => {
   });
 });
 
-// Enable AdSense when ready (replace ca-pub ID then call this)
-function enableAdsense(clientId) {
-  document.querySelectorAll('.adsense-placeholder').forEach(el => {
-    el.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-      ins.setAttribute('data-ad-client', clientId);
-    });
-    el.classList.add('active');
-  });
-}
+// Enable AdSense
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('adsenseTop').classList.add('active');
+});
 
 // Page navigation (main / privacy / terms)
 function showPage(page) {
