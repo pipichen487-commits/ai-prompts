@@ -13,7 +13,6 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ai-prompts.xin/">
 <meta name="baidu-site-verification" content="code-vu2D3mHFdG">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1231193698344258" crossorigin="anonymous"></script>
 <style>
   :root {
     --primary: #6366f1;
@@ -371,51 +370,6 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  /* In-feed ad card */
-  .card.ad-card {
-    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
-    border: 2px dashed #c084fc;
-    cursor: default;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 180px;
-  }
-  .card.ad-card:hover { transform: none; border-color: #a855f7; }
-  .card.ad-card .ad-card-icon { font-size: 36px; margin-bottom: 8px; }
-  .card.ad-card .ad-card-title { font-size: 16px; font-weight: 700; color: #6b21a8; margin-bottom: 4px; }
-  .card.ad-card .ad-card-desc { font-size: 12px; color: #7c3aed; margin-bottom: 12px; }
-  .card.ad-card .ad-card-btn {
-    background: #7c3aed;
-    color: #fff;
-    padding: 8px 20px;
-    border-radius: 100px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    transition: .2s;
-  }
-  .card.ad-card .ad-card-btn:hover { background: #6d28d9; }
-  /* AdSense placeholder */
-  .adsense-wrap {
-    max-width: 1100px;
-    margin: 0 auto 16px;
-    padding: 0 16px;
-    text-align: center;
-  }
-  .adsense-placeholder {
-    background: var(--gray-100);
-    border: 2px dashed var(--gray-200);
-    border-radius: var(--radius);
-    padding: 20px;
-    color: var(--gray-500);
-    font-size: 13px;
-    display: none;
-  }
-  .adsense-placeholder.active { display: block; }
-
   /* Bottom sections */
   .bottom-sections {
     max-width: 1100px;
@@ -577,22 +531,8 @@
   </div>
 </div>
 
-<!-- Google AdSense (预留) -->
-<div class="adsense-wrap">
-  <div class="adsense-placeholder" id="adsenseTop">
-    <div class="ad-label">广告</div>
-    <div id="ad-unit-top" style="min-height:90px;">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1231193698344258" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1231193698344258" data-ad-slot="1231193698" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-  </div>
-</div>
-
 <div class="grid" id="grid"></div>
 
-<!-- Ad: In-feed sponsored card (每隔6个卡片插入一个) -->
-<div id="adInject" style="display:none;"></div>
 
 <!-- Bottom Sections -->
 <div class="bottom-sections">
@@ -640,27 +580,7 @@
       </a>
     </div>
   </div>
-  <div class="section-card full">
-    <h2>📢 商务合作 / 广告投放</h2>
-    <p class="donation-text">本站日均访问量持续增长，精准触达 AI 从业者和创作者人群</p>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
-      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:var(--primary);">AI</div>
-        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">精准用户群体</div>
-      </div>
-      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:var(--green);">📩</div>
-        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">广告位/赞助合作</div>
-      </div>
-      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:var(--orange);">🔗</div>
-        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">友链/推广置换</div>
-      </div>
-    </div>
-    <p class="donation-text" style="margin-top:12px;font-size:12px;">联系邮箱：<a href="mailto:pipichen487@gmail.com" style="color:var(--primary);">pipichen487@gmail.com</a></p>
-  </div>
-</div>
-
+  
 <div class="toast" id="toast">✅ 已复制到剪贴板</div>
 
 <div class="modal-overlay" id="modal">
@@ -904,11 +824,6 @@ document.querySelectorAll('.donation-amount').forEach(el => {
   });
 });
 
-// Enable AdSense
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('adsenseTop').classList.add('active');
-});
-
 // Page navigation (main / privacy / terms)
 function showPage(page) {
   const main = document.querySelector('.page-main');
@@ -919,8 +834,6 @@ function showPage(page) {
   if (terms) terms.classList.toggle('active', page === 'terms');
   window.scrollTo(0, 0);
 }
-
-console.log('AI 提示词工具箱 loaded. Use enableAdsense("ca-pub-XXXXX") when AdSense is approved.');
 </script>
 </body>
 </html>
