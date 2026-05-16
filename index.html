@@ -322,6 +322,90 @@
     color: var(--gray-500);
   }
 
+  /* ===== Ad / Monetization Styles ===== */
+  .ad-banner {
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    padding: 0 16px;
+  }
+  .ad-banner-inner {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ad-banner-inner .ad-text { color: rgba(255,255,255,.9); font-size: 13px; line-height: 1.5; }
+  .ad-banner-inner .ad-text strong { color: #fff; font-size: 15px; }
+  .ad-banner-inner .ad-btn {
+    background: #f59e0b;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: .2s;
+    flex-shrink: 0;
+  }
+  .ad-banner-inner .ad-btn:hover { transform: scale(1.05); }
+  .ad-label {
+    text-align: center;
+    font-size: 10px;
+    color: var(--gray-500);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  /* In-feed ad card */
+  .card.ad-card {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 2px dashed #c084fc;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 180px;
+  }
+  .card.ad-card:hover { transform: none; border-color: #a855f7; }
+  .card.ad-card .ad-card-icon { font-size: 36px; margin-bottom: 8px; }
+  .card.ad-card .ad-card-title { font-size: 16px; font-weight: 700; color: #6b21a8; margin-bottom: 4px; }
+  .card.ad-card .ad-card-desc { font-size: 12px; color: #7c3aed; margin-bottom: 12px; }
+  .card.ad-card .ad-card-btn {
+    background: #7c3aed;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .2s;
+  }
+  .card.ad-card .ad-card-btn:hover { background: #6d28d9; }
+  /* AdSense placeholder */
+  .adsense-wrap {
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    padding: 0 16px;
+    text-align: center;
+  }
+  .adsense-placeholder {
+    background: var(--gray-100);
+    border: 2px dashed var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    color: var(--gray-500);
+    font-size: 13px;
+    display: none;
+  }
+  .adsense-placeholder.active { display: block; }
+
   /* Bottom sections */
   .bottom-sections {
     max-width: 1100px;
@@ -381,12 +465,32 @@
     white-space: nowrap;
   }
   .donation-text { font-size: 13px; color: var(--gray-500); text-align: center; }
+  .donation-amounts {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 12px 0;
+  }
+  .donation-amount {
+    padding: 6px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: .2s;
+    background: #fff;
+  }
+  .donation-amount:hover { border-color: var(--primary); color: var(--primary); }
+  .donation-amount.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 
   @media (max-width: 640px) {
     .grid { grid-template-columns: 1fr; }
     .bottom-sections { grid-template-columns: 1fr; }
     .header h1 { font-size: 22px; }
     .cat-btn { padding: 8px 16px; font-size: 13px; }
+    .ad-banner-inner { flex-direction: column; text-align: center; }
   }
 </style>
 </head>
@@ -406,15 +510,47 @@
 
 <div class="cat-nav" id="catNav"></div>
 
+<!-- 推广横幅 -->
+<div class="ad-banner">
+  <div class="ad-label">🎯 赞助推荐</div>
+  <div class="ad-banner-inner">
+    <div class="ad-text">
+      <strong>💡 想学 AI 但不知从哪开始？</strong><br>
+      精选 AI 课程 + 实战项目，从入门到精通
+    </div>
+    <a class="ad-btn" href="https://s.click.taobao.com/t?e=m%3D2%26s%3D" target="_blank" rel="nofollow noopener">了解详情 →</a>
+  </div>
+</div>
+
+<!-- Google AdSense (预留) -->
+<div class="adsense-wrap">
+  <div class="adsense-placeholder" id="adsenseTop">
+    <div class="ad-label">广告</div>
+    <div id="ad-unit-top" style="min-height:90px;">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous" onerror="document.getElementById('adsenseTop').classList.remove('active')"></script>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
+</div>
+
 <div class="grid" id="grid"></div>
+
+<!-- Ad: In-feed sponsored card (每隔6个卡片插入一个) -->
+<div id="adInject" style="display:none;"></div>
 
 <!-- Bottom Sections -->
 <div class="bottom-sections">
   <div class="section-card">
     <h2>☕ 赞赏支持</h2>
     <p class="donation-text">如果这个工具对你有帮助，欢迎请我喝杯咖啡 ☕</p>
+    <div class="donation-amounts">
+      <span class="donation-amount">❤️ 6.66</span>
+      <span class="donation-amount active">❤️ 8.88</span>
+      <span class="donation-amount">❤️ 16.88</span>
+    </div>
     <img src="qrcode.png" alt="赞赏码" style="width:160px;display:block;margin:12px auto;border-radius:12px;">
-    <p class="donation-text" style="margin-top:8px;">微信 / 支付宝 均可</p>
+    <p class="donation-text" style="margin-top:8px;">微信 / 支付宝 均可 · 随缘支持</p>
   </div>
   <div class="section-card">
     <h2>🔧 推荐 AI 工具</h2>
@@ -448,6 +584,25 @@
         <span class="tool-link">去使用 →</span>
       </a>
     </div>
+  </div>
+  <div class="section-card full">
+    <h2>📢 商务合作 / 广告投放</h2>
+    <p class="donation-text">本站日均访问量持续增长，精准触达 AI 从业者和创作者人群</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
+      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:24px;font-weight:800;color:var(--primary);">AI</div>
+        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">精准用户群体</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:24px;font-weight:800;color:var(--green);">📩</div>
+        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">广告位/赞助合作</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:24px;font-weight:800;color:var(--orange);">🔗</div>
+        <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">友链/推广置换</div>
+      </div>
+    </div>
+    <p class="donation-text" style="margin-top:12px;font-size:12px;">联系邮箱：<a href="mailto:pipichen487@gmail.com" style="color:var(--primary);">pipichen487@gmail.com</a></p>
   </div>
 </div>
 
@@ -611,6 +766,26 @@ document.getElementById('modal').addEventListener('click', e => {
 // Init
 renderCatNav();
 render();
+
+// Donation amount selector
+document.querySelectorAll('.donation-amount').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.donation-amount').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Enable AdSense when ready (replace ca-pub ID then call this)
+function enableAdsense(clientId) {
+  document.querySelectorAll('.adsense-placeholder').forEach(el => {
+    el.querySelectorAll('ins.adsbygoogle').forEach(ins => {
+      ins.setAttribute('data-ad-client', clientId);
+    });
+    el.classList.add('active');
+  });
+}
+
+console.log('AI 提示词工具箱 loaded. Use enableAdsense("ca-pub-XXXXX") when AdSense is approved.');
 </script>
 </body>
 </html>
